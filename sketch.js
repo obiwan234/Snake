@@ -1,3 +1,4 @@
+//when shrink, instead of change canvas, mark good areas of canvas and use white rects; if snake in good area take raincheck
 const blobSize=8;
 let snake;
 let length;
@@ -12,6 +13,8 @@ let lost;
 let quit;
 let wait;
 let instr=true;
+let canvas;
+let numApples;
 
 function cell(x,y,r,color) {
 	this.x=x;
@@ -28,18 +31,22 @@ function cell(x,y,r,color) {
 }
 
 function setup() {
-	canvas=createCanvas(0.98*windowWidth,0.98*windowHeight);
+	canvas=createCanvas(windowWidth,windowHeight);
+	canvas.position((windowWidth-width)/2,(windowHeight-height)/2);
 	angleMode(DEGREES);
 	again=createButton("Start Game");
-	again.position(width/2-15,height/2+30);
+	again.position(0.5*windowWidth-66,0.6*windowHeight);
+	again.size(136,30);
 	again.mousePressed(initializeVars);
 }
 
 function initializeVars() {
-	apple=new cell(random(20,width-20),random(20,height-20),round(random(10,15)),color(180,24,2));
+	canvas.size(windowWidth,windowHeight);
+	canvas.position((windowWidth-width)/2,(windowHeight-height)/2);
+	apple=new cell(random(0.0106*width,0.9894*width),random(0.0216*height,0.9784*height),round(random(10,15)),color(180,24,2));
 	snake=[];
 	length=10;
-	snake.splice(0,0,new cell(width/2,height-10,blobSize,color(24,180,2)));
+	snake.splice(0,0,new cell(0.5*width,height-10,blobSize,color(24,180,2)));
 	angle=270;
 	incrAngle=0;
 	wait=4;
@@ -51,6 +58,7 @@ function initializeVars() {
 	noCursor();
 	again.html("Play Again?");
 	again.hide();
+	numApples=0;
 }
 
 function draw() {
@@ -74,46 +82,58 @@ function draw() {
 		}
 		//check for game mechanics ie lose and apple
 		if(snake[0].intersect(apple)) {
+			numApples++;
+			if(numApples%6==0) {
+				canvas.size(0.85*width,0.85*height);
+				canvas.position((windowWidth-width)/2,(windowHeight-height)/2);
+			}
+			let x=random(0.0106*width,0.9894*width);
+			let y=random(0.0216*height,0.9784*height);
+			if(numApples%6==4) {
+				let x=random(0.0106*width,0.89*width);
+				let y=random(0.0216*height,0.89*height);
+			}
 			length+=apple.r;
 			wait-=.05;
-			apple=new cell(random(20,width-20),random(20,height-20),round(random(10,15)),color(180,24,2));
+			apple=new cell(x,y,round(random(10,15)),color(180,24,2));
 		}
 		if(snake.length>=4&&isOut()) {//first condition make sure not first coming out
 			loseGame();
 			lost=true;
+			pause=false;
 			//display game over
 		}
 		if(lost) {
 			fill(255);
-			textSize(60);
-			text("You Lost!",width/2-100,height/2-100);
+			textSize(0.0319*width);
+			text("You Lost!",0.44*width,0.392*height);
 		}
 		if(quit) {
 			fill(255);
-			textSize(60);
-			text("You Quit!",width/2-100,height/2-100);
+			textSize(0.0319*width);
+			text("You Quit!",0.44*width,0.392*height);
 		}
 		if(pause) {
 			fill(255);
-			textSize(60);
-			text("Game Paused",width/2-180,height/2-100);
+			textSize(0.0319*width);
+			text("Game Paused",0.395*width,0.392*height);
 		}
 		fill(255);
-		textSize(20);
 		if(lost||quit||pause) {
-			textSize(25);
-			text("Score: "+length,width/2-20,height/2-50);
+			textSize(0.0133*width);
+			text("Score: "+length,0.475*width,0.446*height);
 		} else {
-			text("Score: "+length,10,30);
+			textSize(0.0106*width);
+			text("Score: "+length,0.005*width,0.032*height);
 		}
 	} else if(instr) {
 		fill(255);
-		textSize(70);
-		text("Snake!",width/2-85,height/2-170);
-		textSize(25);
-		text("Use side arrows to steer snake.",width/2-160,height/2-120);
-		text("Eat apples to grow and increase score.",width/2-200,height/2-80);
-		text("Press 'P' to pause; 'Q' to quit.",width/2-150,height/2-40);
+		textSize(0.0372*width);
+		text("Snake!",0.447*width,0.316*height);
+		textSize(0.0123*width);
+		text("Use side arrows to steer snake.",0.415*width,0.39*height);
+		text("Eat apples to grow and increase score.",0.394*width,0.433*height);
+		text("Press 'P' to pause; 'Q' to quit.",0.42*width,0.477*height);
 	}
 }
 
@@ -127,6 +147,7 @@ function keyPressed() {
 	if(key=="Q") {
 		loseGame();
 		quit=true;
+		pause=false;
 	}
 	if(key=="P"&&!quit) {
 		pause=!pause;
