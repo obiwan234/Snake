@@ -129,11 +129,12 @@ function draw() {
 	} else if(instr) {
 		fill(255);
 		textSize(0.0372*width);
-		text("Snake!",0.447*width,0.316*height);
+		text("Snake!",0.447*width,0.3*height);
 		textSize(0.0123*width);
-		text("Use side arrows to steer snake.",0.415*width,0.39*height);
-		text("Eat apples to grow and increase score.",0.394*width,0.433*height);
-		text("Press 'P' to pause; 'Q' to quit.",0.42*width,0.477*height);
+		text("Use side arrows to steer snake.",0.415*width,0.38*height);
+		text("Eat apples to grow and increase score.",0.394*width,0.423*height);
+		text("Press 'P' to pause; 'Q' to quit.",0.42*width,0.467*height);
+		text("If you hit the sides or yourself, your out!",0.39*width,0.51*height);
 	}
 }
 
